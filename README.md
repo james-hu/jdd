@@ -1,3 +1,5 @@
+(This is a modified version for being embedded in other websites easier)
+
 JSON Diff
 ==================================================
 
