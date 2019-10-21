@@ -963,21 +963,25 @@ var jdd = {
         var loadUrl = function (id, errId) {
             if ($('#' + id).val().trim().substring(0, 4).toLowerCase() === 'http') {
                 jdd.requestCount++;
-                $.post('proxy.php',
+                $.ajax(
                     {
-                        'url': $('#' + id).val().trim()
-                    }, function (responseObj) {
-                        if (responseObj.error) {
-                            $('#' + errId).text(responseObj.result).show();
+                        'url': $('#' + id).val().trim(),
+                        type: 'GET',
+                        dataType: 'json',
+                        error: function(jqXHR, textStatus, error) {
+                            var errMsg = '' + textStatus + ' (' + error + ')';
+                            $('#' + errId).text(errMsg).show();
                             $('#' + id).addClass('error');
                             $('body').removeClass('progress');
                             $('#compare').prop('disabled', false);
-                        } else {
-                            $('#' + id).val(responseObj.content);
+                        },
+                        success: function(data, textStatus, jqXHR) {
+                            $('#' + id).val(jqXHR.responseText);
                             jdd.requestCount--;
                             jdd.compare();
                         }
-                    }, 'json');
+                    }
+                );
                 return true;
             } else {
                 return false;
